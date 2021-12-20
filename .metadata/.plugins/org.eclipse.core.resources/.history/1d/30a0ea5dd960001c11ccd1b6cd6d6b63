@@ -1,0 +1,22 @@
+package br.com.spring.main.model;
+
+public class Archive {
+
+    private String name;
+    private String directory;
+
+    public Archive(String fullDiretory) {
+        extractDataFromFullDiretory(fullDiretory);
+    }
+
+    private void extractDataFromFullDiretory(String fullDiretory) {
+        if (fullDiretory.isEmpty())
+        	throw new Exception("Um diretório deve ser informdo");
+        
+        String[] folders = fullDiretory.split("/");
+        
+        
+        return "não rola";
+    }
+
+}

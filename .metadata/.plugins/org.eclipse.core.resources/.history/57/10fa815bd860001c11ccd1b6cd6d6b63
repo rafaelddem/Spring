@@ -1,0 +1,17 @@
+package br.com.spring.main.model;
+
+public class Archive {
+
+    private String name;
+    private String directory;
+
+    public Archive(String fullDiretory) {
+        return extr;
+    }
+
+    private String extractDataFromFullDiretory(String fullDiretory) {
+        if (fullDiretory.isEmpty())
+            return "rola";
+    }
+
+}
