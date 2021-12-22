@@ -5,7 +5,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Iterator;
 
 import javax.transaction.Transactional;
 
@@ -107,23 +110,66 @@ public class MainController {
         return retorno;
     }
 
-    @RequestMapping("/statics")
+    @RequestMapping("/statistics")
     @ResponseBody
 	@Transactional
-    public String statics()
+    public String statistics()
     {
-        List<Producer> producers = producerRepository.findAll();
+        Collection<Producer> producers = producerRepository.findAll();
+        Collection<Movie> movies = movieRepository.findAll();
+
         for (Producer producer : producers) {
-            // producer.setUpToDate(true);
-            // producerRepository.updateProducer(producer.getId(), producer.getMaxInterval(), producer.getYearUntilSecondAward(), producer.getUpToDate());
+            Collection<Movie> moviesProducer = movies.stream().filter(deal -> deal.getProducers().contains(producer)).sorted(Comparator.comparing(Movie::getYear).reversed()).toList();
+            Iterator<Movie> it = moviesProducer.iterator();
+            int year = it.next().getYear();
+            while (it.hasNext()) {
+                int nextYear = it.next().getYear();
+                int interval = year - nextYear;
+                year = nextYear;
+
+                if (interval > producer.getMaxInterval()) {
+                    producer.setMaxInterval(interval);
+                }
+                if (interval < producer.getMinInterval()) {
+                    producer.setMinInterval(interval);
+                }
+            }
         }
-        return "";
 
+        Collection<Producer> producerMaxInterval = new ArrayList<Producer>();
+        producerMaxInterval.add(producers.stream().sorted(Comparator.comparing(Producer::getMaxInterval).reversed()).toList().get(0));
+        // return producerMaxInterval;
 
-
-
-        
-        // Producer producer = producerRepository.findByName("asd");
-        // producer.setUpToDate(true);
+        // String retorno = "{\"min\": [
+        //     {
+        //     "producer": "Producer 1",
+        //     "interval": 1,
+        //     "previousWin": 2008,
+        //     "followingWin": 2009
+        //     },
+        //     {
+        //     "producer": "Producer 2",
+        //     "interval": 1,
+        //     "previousWin": 2018,
+        //     "followingWin": 2019
+        //     }
+        //     ],
+        //     "max": [
+        //     {
+        //     "producer": "Producer 1",
+        //     "interval": 99,
+        //     "previousWin": 1900,
+        //     "followingWin": 1999
+        //     },
+        //     {
+        //     "producer": "Producer 2",
+        //     "interval": 99,
+        //     "previousWin": 2000,
+        //     "followingWin": 2099
+        //     }
+        //     ]
+        //     }
+        // ";
+        return "{\"campo1\": \"valor1\", \"campo2\": 2}";
     }
 }

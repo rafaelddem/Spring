@@ -1,9 +1,12 @@
 package br.com.spring.main.model;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 @Entity
 public class Producer {
@@ -11,9 +14,15 @@ public class Producer {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
-    // private int maxInterval;
-    // private int yearUntilSecondAward = 999;
-    // private boolean upToDate;
+
+    @Transient
+    private int maxInterval;
+
+    @Transient
+    private int minInterval = 999;
+
+    @Transient
+    private List<Movie> movies;// = new List<Movie>();
 
     public Producer() {}
 
@@ -22,34 +31,34 @@ public class Producer {
         this.name = name;
     }
 
-    // public int getId()
-    // {
-    //     return this.id;
-    // }
+    public int getId()
+    {
+        return this.id;
+    }
 
     public String getName()
     {
         return this.name;
     }
 
-    // public int getMaxInterval()
-    // {
-    //     return this.maxInterval;
-    // }
+    public void setMaxInterval(int maxInterval)
+    {
+        this.maxInterval = maxInterval;
+    }
 
-    // public int getYearUntilSecondAward()
-    // {
-    //     return this.yearUntilSecondAward;
-    // }
+    public int getMaxInterval()
+    {
+        return this.maxInterval;
+    }
 
-    // public void setUpToDate(boolean upToDate)
-    // {
-    //     this.upToDate = upToDate;
-    // }
+    public void setMinInterval(int minInterval)
+    {
+        this.minInterval = minInterval;
+    }
 
-    // public boolean getUpToDate()
-    // {
-    //     return this.upToDate;
-    // }
+    public int getMinInterval()
+    {
+        return this.minInterval;
+    }
 
 }

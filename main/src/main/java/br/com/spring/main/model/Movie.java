@@ -10,7 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
 @Entity
-public class Movie {
+public class Movie
+{
     
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -19,12 +20,9 @@ public class Movie {
     private String studio;
 
     @ManyToMany
-    private List<Producer> producer;
+    private List<Producer> producers;
 
-    public Movie()
-    {
-        
-    }
+    public Movie() {}
 
     public Movie(String title, int year, String studio)
     {
@@ -32,18 +30,28 @@ public class Movie {
         this.title = title;
         this.studio = studio;
 
-        this.producer = new ArrayList<Producer>();
+        this.producers = new ArrayList<Producer>();
     }
 
     public void addProducer(String[] producer)
     {
         for (String producerName : producer) {
-            this.producer.add(new Producer(producerName));
+            this.producers.add(new Producer(producerName));
         }
     }
 
     public void addProducer(Producer producer)
     {
-        this.producer.add(producer);
+        this.producers.add(producer);
+    }
+
+    public List<Producer> getProducers()
+    {
+        return this.producers;
+    }
+
+    public int getYear()
+    {
+        return this.year;
     }
 }
