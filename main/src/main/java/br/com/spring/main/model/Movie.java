@@ -33,13 +33,6 @@ public class Movie
         this.producers = new ArrayList<Producer>();
     }
 
-    public void addProducer(String[] producer)
-    {
-        for (String producerName : producer) {
-            this.producers.add(new Producer(producerName));
-        }
-    }
-
     public void addProducer(Producer producer)
     {
         this.producers.add(producer);
