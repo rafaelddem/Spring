@@ -12,6 +12,7 @@ import java.util.Iterator;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,8 +31,8 @@ public class MainController {
     @Autowired
     private ProducerRepository producerRepository;
 
-    @RequestMapping("/")
-    // @ResponseBody
+    @GetMapping("/")
+    @ResponseBody
     public String hello() 
     {
         String retorno = "";
@@ -58,8 +59,8 @@ public class MainController {
         return retorno;
     }
 
-    @RequestMapping("/loadData")
-    // @ResponseBody
+    @GetMapping("/loadData")
+    @ResponseBody
     public String loadData()
     {
         String retorno = "";
@@ -82,7 +83,7 @@ public class MainController {
 
                     if (movie != null) 
                         continue;
-
+                        
                     movie = new Movie(lineData[1], Integer.parseInt(lineData[0]), lineData[2]);
 
                     //producer
@@ -114,9 +115,8 @@ public class MainController {
         return retorno;
     }
 
-    @RequestMapping("/statistics")
+    @GetMapping("/statistics")
     @ResponseBody
-	@Transactional
     public String statistics()
     {
         Collection<Producer> producers = producerRepository.findAll();
@@ -184,11 +184,6 @@ public class MainController {
             responseMax += "},";
         }
         responseMax += "]";
-        // Collection<Producer> producerMaxInterval = new ArrayList<Producer>();
-        // producerMaxInterval.add(producers.stream().sorted(Comparator.comparing(Producer::getMaxInterval).reversed()).toList().get(0));
-
-        // producers.stream().max(Comparator.comparing(Producer::getMaxInterval));
-        // return producerMaxInterval;
 
         return "{" + responseMin + ", " + responseMax + "}";
     }
