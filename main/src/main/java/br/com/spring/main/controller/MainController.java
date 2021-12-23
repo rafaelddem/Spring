@@ -78,7 +78,12 @@ public class MainController {
                     String[] lineData = line.split(csvDivisor);
 
                     // movie
-                    Movie movie = new Movie(lineData[1], Integer.parseInt(lineData[0]), lineData[2]);
+                    Movie movie = movieRepository.findByTitle(lineData[1]);
+
+                    if (movie != null) 
+                        continue;
+
+                    movie = new Movie(lineData[1], Integer.parseInt(lineData[0]), lineData[2]);
 
                     //producer
                     String producerCell = lineData[3].replaceAll(" and ",",").replaceAll(", ",",");

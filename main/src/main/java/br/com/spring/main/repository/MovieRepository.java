@@ -6,5 +6,7 @@ import br.com.spring.main.model.Movie;
 
 public interface MovieRepository extends JpaRepository<Movie, Integer>
 {
+
+    Movie findByTitle(String title);
     
 }
