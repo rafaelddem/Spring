@@ -22,6 +22,12 @@ public class Producer {
     private int minInterval = 999;
 
     @Transient
+    private int[] yearForMaxInterval;
+
+    @Transient
+    private int[] yearForMinInterval;
+
+    @Transient
     private List<Movie> movies;// = new List<Movie>();
 
     public Producer() {}
@@ -59,6 +65,26 @@ public class Producer {
     public int getMinInterval()
     {
         return this.minInterval;
+    }
+
+    public void setYearForMaxInterval(int[] yearForMaxInterval)
+    {
+        this.yearForMaxInterval = yearForMaxInterval;
+    }
+
+    public int[] getYearForMaxInterval()
+    {
+        return this.yearForMaxInterval;
+    }
+
+    public void setYearForMinInterval(int[] yearForMinInterval)
+    {
+        this.yearForMinInterval = yearForMinInterval;
+    }
+
+    public int[] getYearForMinInterval()
+    {
+        return this.yearForMinInterval;
     }
 
 }

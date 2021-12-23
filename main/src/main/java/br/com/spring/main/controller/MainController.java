@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -118,6 +117,9 @@ public class MainController {
         Collection<Producer> producers = producerRepository.findAll();
         Collection<Movie> movies = movieRepository.findAll();
 
+        int maxIntervalAbsolute = 0;
+        int minIntervalAbsolute = 999;
+
         for (Producer producer : producers) {
             Collection<Movie> moviesProducer = movies.stream().filter(deal -> deal.getProducers().contains(producer)).sorted(Comparator.comparing(Movie::getYear).reversed()).toList();
             Iterator<Movie> it = moviesProducer.iterator();
@@ -125,51 +127,64 @@ public class MainController {
             while (it.hasNext()) {
                 int nextYear = it.next().getYear();
                 int interval = year - nextYear;
-                year = nextYear;
 
                 if (interval > producer.getMaxInterval()) {
                     producer.setMaxInterval(interval);
+
+                    int[] yearsMax = {nextYear, year};
+                    producer.setYearForMaxInterval(yearsMax);
+
+                    if (interval > maxIntervalAbsolute) 
+                        maxIntervalAbsolute = interval;
                 }
+
                 if (interval < producer.getMinInterval()) {
                     producer.setMinInterval(interval);
+
+                    int[] yearsMin = {nextYear, year};
+                    producer.setYearForMinInterval(yearsMin);
+
+                    if (interval < minIntervalAbsolute) 
+                        minIntervalAbsolute = interval;
                 }
+
+                year = nextYear;
             }
         }
 
-        Collection<Producer> producerMaxInterval = new ArrayList<Producer>();
-        producerMaxInterval.add(producers.stream().sorted(Comparator.comparing(Producer::getMaxInterval).reversed()).toList().get(0));
+        int minIntervalAbsoluteFilter = minIntervalAbsolute;
+        Collection<Producer> producersMinInterval = producers.stream().filter(deal -> deal.getMinInterval() == minIntervalAbsoluteFilter).toList();
+        
+        int maxIntervalAbsoluteFilter = maxIntervalAbsolute;
+        Collection<Producer> producersMaxInterval = producers.stream().filter(deal -> deal.getMaxInterval() == maxIntervalAbsoluteFilter).toList();
+
+        String responseMin = "\"min\": [";
+        for (Producer producer : producersMinInterval) {
+            responseMin += "{";
+            responseMin += "\"producer\": \"" + producer.getName() + "\", ";
+            responseMin += "\"interval\": " + producer.getMinInterval() + ", ";
+            responseMin += "\"previousWin\": " + producer.getYearForMinInterval()[0] + ", ";
+            responseMin += "\"followingWin\": " + producer.getYearForMinInterval()[1] + ", ";
+            responseMin += "},";
+        }
+        responseMin += "]";
+
+        String responseMax = "\"max\": [";
+        for (Producer producer : producersMaxInterval) {
+            responseMax += "{";
+            responseMax += "\"producer\": \"" + producer.getName() + "\", ";
+            responseMax += "\"interval\": " + producer.getMaxInterval() + ", ";
+            responseMax += "\"previousWin\": " + producer.getYearForMaxInterval()[0] + ", ";
+            responseMax += "\"followingWin\": " + producer.getYearForMaxInterval()[1] + ", ";
+            responseMax += "},";
+        }
+        responseMax += "]";
+        // Collection<Producer> producerMaxInterval = new ArrayList<Producer>();
+        // producerMaxInterval.add(producers.stream().sorted(Comparator.comparing(Producer::getMaxInterval).reversed()).toList().get(0));
+
+        // producers.stream().max(Comparator.comparing(Producer::getMaxInterval));
         // return producerMaxInterval;
 
-        // String retorno = "{\"min\": [
-        //     {
-        //     "producer": "Producer 1",
-        //     "interval": 1,
-        //     "previousWin": 2008,
-        //     "followingWin": 2009
-        //     },
-        //     {
-        //     "producer": "Producer 2",
-        //     "interval": 1,
-        //     "previousWin": 2018,
-        //     "followingWin": 2019
-        //     }
-        //     ],
-        //     "max": [
-        //     {
-        //     "producer": "Producer 1",
-        //     "interval": 99,
-        //     "previousWin": 1900,
-        //     "followingWin": 1999
-        //     },
-        //     {
-        //     "producer": "Producer 2",
-        //     "interval": 99,
-        //     "previousWin": 2000,
-        //     "followingWin": 2099
-        //     }
-        //     ]
-        //     }
-        // ";
-        return "{\"campo1\": \"valor1\", \"campo2\": 2}";
+        return "{" + responseMin + ", " + responseMax + "}";
     }
 }
